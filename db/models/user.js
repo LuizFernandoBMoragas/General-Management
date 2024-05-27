@@ -13,7 +13,7 @@ module.exports = sequelize.define('user', {
   userType: {
     type: Sequelize.ENUM('0','1','2'),
   },
-  fisrtName: {
+  firstName: {
     type: Sequelize.STRING
   },
   lastName: {
