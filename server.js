@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express');
 const authRouter = require('./route/authRoute');
 const catchAsync = require('./utils/catchAsync');
+const AppError = require('./utils/appError');
 
 const app = express();
 
@@ -20,14 +21,15 @@ app.use('/api/v1/auth', authRouter);
 app.use(
     '*', 
     catchAsync (async (req, res, next) => {
-        throw new Error('this is error');
+        throw new AppError('this is error', 404);
     })
 );
 
 app.use((err, req, res, next) => {
-    res.status(404).json({
-        status: 'error',
-        message: err.message
+    res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+        stack: err.stack
     });
 });
 
