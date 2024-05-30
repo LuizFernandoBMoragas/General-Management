@@ -1,4 +1,5 @@
 const { stack } = require('sequelize/lib/utils');
+const AppError = require('../utils/appError');
 
 require('dotenv').config;
 
@@ -36,6 +37,12 @@ const sendErrorProd = (error, res) => {
 };
 
 const globalErrorHandler = (err, req, res, next) => {
+    if(err.name === 'SequelizeUniqueConstraintError'){
+        err = new AppError(err.errors[0].message, 400);
+    }
+    if(err.name === 'SequelizeValidationError'){
+        err = new AppError(err.errors[0].message, 400);
+    }
     if(process.env.NODE_ENV === 'development'){
         return sendErrorDev(err, res);
     }
