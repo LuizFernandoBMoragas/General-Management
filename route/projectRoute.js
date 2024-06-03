@@ -1,8 +1,8 @@
-const { authentication } = require('../controller/authController');
-const { createProject } = require('../controller/projectController');
+const { authentication, restrictTo } = require('../controller/authController');
+const { createProject, getAllProjects } = require('../controller/projectController');
 
 const router = require('express').Router();
 
-router.route('/').post(authentication, createProject);
+router.route('/').post(authentication, restrictTo('1'), createProject).get(authentication, getAllProjects);
 
 module.exports = router;
