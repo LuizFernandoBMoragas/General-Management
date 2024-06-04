@@ -27,7 +27,9 @@ const createProject = catchAsync (async (req, res, next) => {
 });
 
 const getAllProjects  = catchAsync( async(req, res, next) => {
-    const result = await project.findAll({ include: 'user'});
+    const userId = req.user.id;
+
+    const result = await project.findAll({ include: 'user', where: {createdBy: userId}});
 
     return res.json({
         status: 'success',
@@ -81,21 +83,20 @@ const updateProject = catchAsync (async (req, res, next)=>{
 const deleteProject = catchAsync(async (req, res, next) => {
     const userId = req.user.id;
     const projectId = req.params.id;
-    const body = req.body;
 
     const result = await project.findOne({
         where: { id: projectId, createdBy: userId },
     });
-
+    
     if (!result) {
         return next(new AppError('Invalid project id', 400));
     }
-
+    
     await result.destroy();
 
     return res.json({
         status: 'success',
-        message: 'Record deleted successfully',
+        message: 'Record deleted successfully'
     });
 });
 
